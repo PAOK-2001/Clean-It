@@ -1,10 +1,11 @@
 #ifndef PROXIMITY_H
 #define PROXIMITY_H
 #include <MKL25Z4.h>
+#include "delays.h"
 
 void adc_init(void);
 void proximity_init(void);
-uint16_t proximity_read(void);
+int proximity_read(void);
 
 //adc_init()
 // Initialized clock for ADC0 and configures necessary register.
@@ -14,7 +15,7 @@ void adc_init(void){
     /*CLKDIV/4, LS time, single ended 12 bit, bus clock */
     ADC0->CFG1 = 0x40 | 0x10 | 0x04 | 0x00;
 }
-//Proximity_init
+//proximity_init()
 // Configure necessary ports as analogue
 void proximity_init(void){
     // Initialize clock to PORTB
@@ -25,9 +26,11 @@ void proximity_init(void){
     adc_init();
 }
 
-uint16_t proximity_read(int sensorChannel){
-    uint16_t readValue;
-
+int proximity_read(int sensorChannel){
+    int readValue;
+    ADC0->SC1[0] = sensorChannel;
+    while(!(ADC0->SC1[0] & 0x80)) { } /* wait for COCO */
+    readValue = ADC0->R[0]; 
     return readValue;
 }
 
