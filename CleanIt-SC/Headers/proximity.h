@@ -5,7 +5,7 @@
 
 void adc_init(void);
 void proximity_init(void);
-int proximity_read(void);
+int proximity_read(int sensorValue);
 
 //adc_init()
 // Initialized clock for ADC0 and configures necessary register.
@@ -25,7 +25,9 @@ void proximity_init(void){
     PORTB->PCR[1] = 1;
     adc_init();
 }
-
+//proximity_read()
+// @param  integer corresponding to ADC channel. Should be 8 or 9.
+// @returns int value corresponding to the sensor value
 int proximity_read(int sensorChannel){
     int readValue;
     ADC0->SC1[0] = sensorChannel;
