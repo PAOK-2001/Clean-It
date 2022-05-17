@@ -18,12 +18,13 @@ void adc_init(void){
 //proximity_init()
 // Configure necessary ports as analogue
 void proximity_init(void){
+    adc_init();
     // Initialize clock to PORTB
     SIM->SCGC4 |= 0x400;
     // Set PORT B0 & PORT B1 as analogue input
     PORTB->PCR[0] = 0;
     PORTB->PCR[1] = 1;
-    adc_init();
+    
 }
 //proximity_read()
 // @param  integer corresponding to ADC channel. Should be 8 or 9.

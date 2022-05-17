@@ -1,3 +1,0 @@
-BUILD/KL25Z/ARMC6/mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/TOOLCHAIN_ARM/TARGET_M0P/irq_cm0.o: \
-  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Source/TOOLCHAIN_ARM/TARGET_M0P/irq_cm0.S \
-  BUILD/KL25Z/ARMC6/mbed_config.h

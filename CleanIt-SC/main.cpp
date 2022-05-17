@@ -6,12 +6,13 @@
  
 // main() runs in its own thread in the OS
 int main(){ 
-    printf("Pene\n");
-    tpm_delayMs(10);
+    printf("Program Begin\n");
     proximity_init();
     int leftSensor, rightSensor;
     while (true) {
-        leftSensor = proximity_read(8);
+        //leftSensor = proximity_read(8);
+        printf("Loop\n");
+        //printf("%d\n", leftSensor);
         
     }
 }
