@@ -7,7 +7,7 @@
 
 void adc_init(void);
 void proximity_init(void);
-int proximity_read_average(int sensorValue, int meassurments);
+double proximity_read_average(int sensorValue, int meassurments);
 
 //adc_init()
 // Initialized clock for ADC0 and configures necessary register.
@@ -31,19 +31,47 @@ void proximity_init(void){
 //proximity_read()
 // @param  sensorChannel: int corresponding to ADC channel. Should be 8 or 9.
 // @param  meassurments: measurments to average
-// @returns int value corresponding to the sensor value
-int proximity_read_average(int sensorChannel, int meassurments){
+// @returns float in cm
+double proximity_read_average(int sensorChannel, int meassurments){
     int rawValue,sum;
-    int valueCm;
+    double valueCm;
     sum = 0;
     for (int i = 0; i < meassurments; i++){
         ADC0->SC1[0] = sensorChannel;
         while(!(ADC0->SC1[0] & 0x80)) { } /* wait for COCO */
         sum = sum + ADC0->R[0];
-        delayMs(15);
+        delayMs(50);
     }
     rawValue = sum/meassurments;
-    return rawValue;
+    valueCm  = 66.3 -0.0507*rawValue + 0.0000163*pow(rawValue,2) -0.00000000188*pow(rawValue,3);
+    return valueCm;
 }
 
 #endif
+
+
+/* Driver code
+
+#include "mbed.h"
+#include <MKL25Z4.h>
+#include"Headers/proximity.h"
+#include "Headers/delayTPM0.h"
+#include<cstdio>
+ 
+// main() runs in its own thread in the OS
+int main(){ 
+    printf("Program Begin\n");
+    tpm_init();
+    proximity_init();
+    double leftSensor, rightSensor;
+    double test = 9.64;
+    while (true) {
+        leftSensor = proximity_read_average(8,20);
+        printf("%.9f \n", leftSensor);
+        tpm_delayMs(500);
+        // rightSensor = proximity_read_average(9, 20);
+        // printf("Right Sensor: %d\n\n", rightSensor);
+        // tpm_delayMs(250);
+    }
+}
+*/
