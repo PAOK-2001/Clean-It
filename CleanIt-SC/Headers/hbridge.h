@@ -4,6 +4,13 @@
 
 static float mod = 41940;
 
+void hbridge_init(void);
+void forward(float);
+void backward(float);
+void rotate_left(float);
+void rotate_right(float);
+void stop(void);
+
 void hbridge_init(void) {
     SIM->SCGC5 |= 0x0800;  /* enable clock to Port C */
     SIM->SCGC5 |= 0x0200;  /* enable clock to Port A */
@@ -55,5 +62,12 @@ void rotate_right(float speed){
     TPM0->CONTROLS[4].CnV = mod * speed;
     TPM0->CONTROLS[2].CnV = 0;
     TPM0->CONTROLS[1].CnV = mod * speed;
+}
+
+void stop() {
+    TPM0->CONTROLS[5].CnV = 0;
+    TPM0->CONTROLS[4].CnV = 0;
+    TPM0->CONTROLS[2].CnV = 0;
+    TPM0->CONTROLS[1].CnV = 0;
 }
 #endif
