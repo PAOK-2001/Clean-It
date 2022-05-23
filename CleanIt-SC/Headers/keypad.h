@@ -6,19 +6,27 @@ void keypad_init(void);
 char keypad_getkey(void);
 void delayUs(int n);
 
-/* Initializes PortC that is connected to the keypad. */
+/* Initializes Port that is connected to the keypad. */
 /*  Pins as GPIO input pin with pullup enabled.*/ 
 void keypad_init(void) {
-    SIM->SCGC5 |= 0x0800;  /* enable clock to Port C */
-    PORTC->PCR[0] = 0x103; /* PTC0, GPIO, enable pullup*/
-    PORTC->PCR[1] = 0x103; /* PTC1, GPIO, enable pullup*/
-    PORTC->PCR[2] = 0x103; /* PTC2, GPIO, enable pullup*/
-    PORTC->PCR[3] = 0x103; /* PTC3, GPIO, enable pullup*/
-    PORTC->PCR[4] = 0x103; /* PTC4, GPIO, enable pullup*/
-    PORTC->PCR[5] = 0x103; /* PTC5, GPIO, enable pullup*/
-    PORTC->PCR[6] = 0x103; /* PTC6, GPIO, enable pullup*/
-    PORTC->PCR[7] = 0x103; /* PTC7, GPIO, enable pullup*/
-    PTC->PDDR = 0x0F; /* make PTC7-0 as input pins */
+    // Clock to PORTB AND PORTE
+    SIM->SCGC5 |= 0x0400;  /* enable clock to Port B */
+    SIM->SCGC5 |= 0x2000; /* enable clock to Port E */
+    // Initiliaze rows, colums as GPIO
+    //Rows
+    PORTB->PCR[8] = 0x103; /*  PTB8, GPIO, enable pullup*/
+    PORTB->PCR[9] = 0x103; /*  PTB9, GPIO, enable pullup*/
+    PORTB->PCR[10] = 0x103; /* PTB10, GPIO, enable pullup*/
+    PORTB->PCR[11] = 0x103; /* PTB11, GPIO, enable pullup*/
+    //Colums
+    PORTE->PCR[2] = 0x103; /*  PTE2, GPIO, enable pullup*/
+    PORTE->PCR[3] = 0x103; /*  PTE3, GPIO, enable pullup*/
+    PORTE->PCR[4] = 0x103; /*  PTE4, GPIO, enable pullup*/
+    PORTE->PCR[5] = 0x103; /*  PTE5, GPIO, enable pullup*/
+    // make Rows as output and Columns as input pins 
+    PTB->PDDR |= 0xF00; //rows as output
+    PTE->PDDR |= 0x00; //columns as input
+    //PTC->PDDR = 0x0F; 
 }
  
 /* keypad_getkey()
