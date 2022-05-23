@@ -3,6 +3,7 @@
 #include <MKL25Z4.h>
 #include<cstdio>
 #include"delays.h"
+#include"delayTPM0.h"
 #include"lcd.h"
 #include"keypad.h"
 
@@ -13,6 +14,7 @@ int time_select(void);
 // menus_init()
 // Intilizies LCD and keypad for menu management
 void menus_init(){
+    tpm_init();
     LCD_init();
     keypad_init();
 }
@@ -27,6 +29,7 @@ int mode_select(){
     int mode;
     // Show "Welcome" menu for 4 seconds
     send_string("Welcome!\nSelect mode", 20);
+    tpm_delayMs(4000);
     // Input loop for mode select until "# or *" is pressed
     isSelected = false;
     isValid    = false;
@@ -37,23 +40,27 @@ int mode_select(){
         send_string("1.Auto 2.Patern\nSelected:", 25);
         mode = key - key/4; // set selected mode as entered key
         LCD_data((mode)+48) // Display selected mode #number
+        // if key is # or * set isSelected as true and set mode as key value
         if (key == 13 || key == 15) isSelected = true;
         if(mode <= 2) isValid = true;
-        // if key is # or * set isSelected as true and set mode as key value
+        tpm_delayMs(300);
     } while (!isSelected && !isValid);
-    
     return mode
 }
 // time_select()
 // Ask user to input time in seconds, ends until # or * is pressed
 int time_select(){
     bool isSelected;
+    char key;
     int returnTime;
+    isSelected = false;
     do{
         //Get key from keypad
+
         // Display input prompt
+
         // if key is # or * set isSelected as true and set mode as key value 
-    } while (/* condition */);
+    } while (!isSelected);
     
     return returnTime;
 }
