@@ -49,6 +49,7 @@ int mode_select(){
 }
 // time_select()
 // Ask user to input time in seconds, ends until # or * is pressed
+// @returns int with number of seconds to execute mode
 int time_select(){
     bool isSelected;
     char key;

@@ -16,18 +16,18 @@ void LCD_init(void) {
     SIM->SCGC5 |= 0x1000; /* enable clock to Port D */
     SIM->SCGC5 |= 0x2000; /* enable clock to Port E */
     // RS, RW, E
-    PORTE->PCR[1] = 0x100; /* make PTA2 pin as GPIO */
-    PORTD->PCR[7] = 0x100; /* make PTA4 pin as GPIO */
-    PORTD->PCR[6] = 0x100; /* make PTA5 pin as GPIO */    
+    PORTE->PCR[1] = 0x100; /* make PTE1 pin as GPIO */
+    PORTD->PCR[7] = 0x100; /* make PTD7 pin as GPIO */
+    PORTD->PCR[6] = 0x100; /* make PTD6 pin as GPIO */    
     // Data GPIO
-    PORTE->PCR[0]  = 0x100; /* make PTD0 pin as GPIO */
+    PORTE->PCR[0]  = 0x100; /* make PTE0 pin as GPIO */
     PORTD->PCR[1]  = 0x100; /* make PTD1 pin as GPIO */
-    PORTE->PCR[31] = 0x100; /* make PTD2 pin as GPIO */
+    PORTE->PCR[31] = 0x100; /* make PTE31 pin as GPIO */
     PORTD->PCR[3]  = 0x100; /* make PTD3 pin as GPIO */
-    PORTD->PCR[2]  = 0x100; /* make PTD4 pin as GPIO */
-    PORTD->PCR[0]  = 0x100; /* make PTD5 pin as GPIO */
-    PORTD->PCR[5]  = 0x100; /* make PTD6 pin as GPIO */
-    PORTA->PCR[13] = 0x100; /* make PTD7 pin as GPIO */
+    PORTD->PCR[2]  = 0x100; /* make PTD2 pin as GPIO */
+    PORTD->PCR[0]  = 0x100; /* make PTD0 pin as GPIO */
+    PORTD->PCR[5]  = 0x100; /* make PTD5 pin as GPIO */
+    PORTA->PCR[13] = 0x100; /* make PTA7 pin as GPIO */
     // Make pins as output
     PTA->PDDR |= 0x2000;    /* make PTA13* output*/
     PTD->PDDR |= 0xEF;      /* make PTD7,6,1,3,2,0,5* output*/
