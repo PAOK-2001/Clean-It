@@ -56,9 +56,18 @@ int time_select(){
     isSelected = false;
     do{
         //Get key from keypad
-
+        key = keypad_getkey();
         // Display input prompt
-
+        send_string("Clean time:\n",12);
+        if (key == 13 || key == 15) isSelected = true; // if pound or asterisk is pressed
+            else if (key > 0 && key < 13 && key % 4 != 0) { // if a number other than 0 is pressed
+                returnTime *= 10;
+                returnTime += key-key/4; // add number (compensating for keypad offset)
+                LCD_data((key-key/4)+48); // display number
+            } else if (key == 14) { // if 0 is pressed
+                returnTime *= 10;
+                LCD_data(48);
+            }
         // if key is # or * set isSelected as true and set mode as key value 
     } while (!isSelected);
     
