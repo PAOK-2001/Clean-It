@@ -32,17 +32,17 @@ void proximity_init(void){
 // @param  sensorChannel: int corresponding to ADC channel. Should be 8 or 9.
 // @param  meassurments: measurments to average
 // @returns float in cm
-double proximity_read_average(int sensorChannel, int meassurments){
+double proximity_read_average(int sensorChannel, int measurements){
     int rawValue,sum;
     double valueCm;
     sum = 0;
-    for (int i = 0; i < meassurments; i++){
+    for (int i = 0; i < measurements; i++){
         ADC0->SC1[0] = sensorChannel;
         while(!(ADC0->SC1[0] & 0x80)) { } /* wait for COCO */
         sum = sum + ADC0->R[0];
         delayMs(50);
     }
-    rawValue = sum/meassurments;
+    rawValue = sum/measurements;
     valueCm  = 66.3 -0.0507*rawValue + 0.0000163*pow(rawValue,2) -0.00000000188*pow(rawValue,3);
     return valueCm;
 }
