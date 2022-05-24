@@ -23,3 +23,5 @@ void mosfet_on(void){
 void mosfet_off(void){
     PTA->PCOR = 0x1000;
 }
+
+#endif
