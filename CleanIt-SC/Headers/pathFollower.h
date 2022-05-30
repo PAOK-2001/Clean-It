@@ -89,7 +89,7 @@ void spillClean(int totalTime) {
             }
             turn90Left();
         }
-        msLeft -= forwardTimeMs + STOP_TIME*1000*iterations*2 + NINETY_DEGREE_TURN_TIME*1000*2;
+        msLeft -= forwardTimeMs*2 + STOP_TIME*1000*iterations*2 + NINETY_DEGREE_TURN_TIME*1000*2;
         forwardTimeMs += ROOMBA_LENGTH_TIME*1000;
         iterations++;
     } 
@@ -106,7 +106,7 @@ of the right one. This is done to cover the areas that are usually dirtier
 after sweeping the floor.
 */
 void roomOutline(int time) {
-    int msTime = time * 1000;
+    int msTime = time*1000;
     int proximityState;
     while (msTime > 0) {
         proximityState = tooCloseToWall();
