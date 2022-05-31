@@ -4,11 +4,11 @@
 #include "limit_switch.h"
 #define CLOSEST_ALLOWED_DISTANCE 5
 
-int collisionDetectionInit(void);
+void collisionDetectionInit(void);
 int collisionDetected(void);
 int tooCloseToWall(void);
 
-int collisionDetectionInit() {
+void collisionDetectionInit() {
     proximity_init();
     limit_switch_init();
 }
