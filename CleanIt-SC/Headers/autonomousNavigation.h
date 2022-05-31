@@ -108,7 +108,6 @@ bool headToClear(int* routineTime) {
 }
 
 void autonomousRoutine(int time) {
-    collisionDetectionInit();
     bool clear = true;
     while (time > 0) {
         if (clear) {
