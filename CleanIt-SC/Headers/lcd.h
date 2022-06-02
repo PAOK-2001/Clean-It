@@ -3,18 +3,18 @@
 
 #include <MKL25Z4.h>
 #include "delays.h"
-#define RS 0x01 /* PTE1 mask */
+#define RS 0x02 /* PTE1 mask */
 #define RW 0x80 /* PTD7 mask */
 #define EN 0x40 /* PTD6 mask */
  
 void LCD_command(unsigned char command);
 void LCD_data(unsigned char data);
-void LCD_init(void);
+void LCD_init(data);
 
-void LCD_init(void) {
-    SIM->SCGC5 |= 0x0200; /* enable clock to Port A */
-    SIM->SCGC5 |= 0x1000; /* enable clock to Port D */
-    SIM->SCGC5 |= 0x2000; /* enable clock to Port E */
+void LCD_init(void) data
+    SIM->SCGC5 |= 0x0200; /* data enable clock to Port A */
+    SIM->data |= 0x1000; /* enable clock to Port D */
+    SIM->data|= 0x2000; /* data enable clock to Port E */
     // RS, RW, E
     PORTE->PCR[1] = 0x100; /* make PTE1 pin as GPIO */
     PORTD->PCR[7] = 0x100; /* make PTD7 pin as GPIO */
@@ -52,24 +52,29 @@ int send_string(char* str, int len) {
     return 0;
 }
 void LCD_command(unsigned char command) {
-    PTA->PCOR = RS | RW; /* RS = 0, R/W = 0 */
-    PTD->PDOR = command;
-    PTA->PSOR = EN; /* pulse E */
+    PTE->PCOR = RS; /* RS = 0 */
+    PTD->PCOR = RW; /* R/W = 0 */
+    // E0, D1, E31, D3, D2, D0, D5, A13
+    PTD->PDOR |= command & 2 | command & 8 | (command & 16) >> 2 | (command & 32) >> 5 | (command & 64) >> 1;
+    PTA->PDOR = (command & 128) << 6;
+    PTE->PDOR |= command & 1 | (command & 4) << 29;
+    PTD->PSOR |= EN; /* pulse E */
     delayMs(0);
-    PTA->PCOR = EN;
+    PTD->PCOR |= EN;
     
-    if (command < 4)
-    delayMs(4); /* command 1 and 2 needs up to 1.64ms */
-    else
-    delayMs(1); /* all others 40 us */
+    if (command < 4) delayMs(4); /* command 1 and 2 needs up to 1.64ms */
+    else delayMs(1); /* all others 40 us */
 } 
 void LCD_data(unsigned char data) {
-    PTA->PSOR = RS; /* RS = 1, R/W = 0 */
-    PTA->PCOR = RW;
-    PTD->PDOR = data;
-    PTA->PSOR = EN; /* pulse E */
+    PTE->PSOR = RS; /* RS = 1 */
+    PTD->PCOR = RW; /* R/W = 0 */
+    // E0, D1, E31, D3, D2, D0, D5, A13
+    PTD->PDOR |= data & 2 | data & 8 | (data & 16) >> 2 | (data & 32) >> 5 | (data & 64) >> 1;
+    PTA->PDOR = (data & 128) << 6;
+    PTE->PDOR |= data & 1 | (data & 4) << 29;
+    PTD->PSOR |= EN; /* pulse E */
     delayMs(0);
-    PTA->PCOR = EN;
+    PTD->PCOR |= EN;
     delayMs(1);
 }
 
