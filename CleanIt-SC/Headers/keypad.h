@@ -18,7 +18,7 @@ void keypad_init(void) {
     PORTB->PCR[9] = 0x103; /*  PTB9, GPIO, enable pullup*/
     PORTB->PCR[10] = 0x103; /* PTB10, GPIO, enable pullup*/
     PORTB->PCR[11] = 0x103; /* PTB11, GPIO, enable pullup*/
-    //Colums
+    //Columns
     PORTE->PCR[2] = 0x103; /*  PTE2, GPIO, enable pullup*/
     PORTE->PCR[3] = 0x103; /*  PTE3, GPIO, enable pullup*/
     PORTE->PCR[4] = 0x103; /*  PTE4, GPIO, enable pullup*/
@@ -69,20 +69,10 @@ char keypad_getkey(void) {
     /* gets here when one of the rows has key pressed*/
     /*check which column it is*/
     
-    if (col == (0xE0>>2)) return row * 4 + 1; /* key in column 0 */
-    if (col == (0xD0>>2)) return row * 4 + 2; /* key in column 1 */
-    if (col == (0xB0>>2)) return row * 4 + 3; /* key in column 2 */
-    if (col == (0x70>>2)) return row * 4 + 4; /* key in column 3 */
+    if (col == 0x38) return row * 4 + 1; /* key in column 0 */
+    if (col == 0x34) return row * 4 + 2; /* key in column 1 */
+    if (col == 0x2C) return row * 4 + 3; /* key in column 2 */
+    if (col == 0x1C) return row * 4 + 4; /* key in column 3 */
     return 0; /* just to be safe */
-}
-
-/* Delay n microseconds */
-/*The CPU core clock is set to MCGFLLCLK at
-41.94 MHz in SystemInit(). */
-void delayUs(int n) {
-    int i;
-    int j;
-    for(i = 0 ; i < n; i++)
-    for(j = 0 ; j < 7; j++) { }
 }
 #endif

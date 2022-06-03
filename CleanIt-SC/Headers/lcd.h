@@ -1,7 +1,7 @@
 #ifndef LCD_H
 #define LCD_H
  
-#include <MKL25Z4.H>
+#include <MKL25Z4.h>
 #include "delays.h"
 #define RS 0x20 /* PTD5 mask */
 #define RW 0x40 /* PTD6 mask */
