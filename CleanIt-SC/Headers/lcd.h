@@ -9,12 +9,12 @@
  
 void LCD_command(unsigned char command);
 void LCD_data(unsigned char data);
-void LCD_init(data);
+void LCD_init(void);
 
-void LCD_init(void) data
+void LCD_init(void) {
     SIM->SCGC5 |= 0x0200; /* data enable clock to Port A */
-    SIM->data |= 0x1000; /* enable clock to Port D */
-    SIM->data|= 0x2000; /* data enable clock to Port E */
+    SIM->SCGC5 |= 0x1000; /* enable clock to Port D */
+    SIM->SCGC5|= 0x2000; /* data enable clock to Port E */
     // RS, RW, E
     PORTE->PCR[1] = 0x100; /* make PTE1 pin as GPIO */
     PORTD->PCR[7] = 0x100; /* make PTD7 pin as GPIO */
