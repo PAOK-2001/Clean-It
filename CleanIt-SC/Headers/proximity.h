@@ -7,7 +7,7 @@
 
 void adc_init(void);
 void proximity_init(void);
-double proximity_read_average(int sensorValue, int meassurments);
+double proximity_read_average(int, int);
 
 //adc_init()
 // Initialized clock for ADC0 and configures necessary register.
