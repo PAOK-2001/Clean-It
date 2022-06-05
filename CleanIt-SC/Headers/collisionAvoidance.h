@@ -2,7 +2,7 @@
 #define COLLISION_AVOIDANCE_H
 #include "proximity.h"
 #include "limit_switch.h"
-#define CLOSEST_ALLOWED_DISTANCE 5
+#define CLOSEST_ALLOWED_DISTANCE 15
 
 void collisionDetectionInit(void);
 int collisionDetected(void);

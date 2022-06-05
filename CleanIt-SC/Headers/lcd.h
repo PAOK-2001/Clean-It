@@ -83,7 +83,10 @@ delayMs(1);
 int send_string(char* str, int len) {
     LCD_command(1); /* clear display */
     LCD_command(0x80); /* set cursor at first line */
-    for (int c=0; c<len; c++) LCD_data(str[c]); /* write the word */
+    for (int c=0; c<len; c++) {
+        if (str[c] == '\n') LCD_command(0xC0); /* jump to second line for line break */
+        else LCD_data(str[c]); /* write the word */
+    }
     return 0;
 }
 

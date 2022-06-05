@@ -3,11 +3,12 @@
 #include "hbridge.h"
 #include "collisionAvoidance.h"
 #include "delays.h"
-#define NORMAL_OPERATION_SPEED 0.1f
-#define ROOMBA_LENGTH_TIME 1.2f
-#define NINETY_DEGREE_TURN_TIME 1.0f
-#define SENSOR_DISTANCE_AT_WALL 3
-#define STOP_TIME 0.5f
+#include <stdio.h>
+#define NORMAL_OPERATION_SPEED 0.5f
+#define ROOMBA_LENGTH_TIME 0.7f
+#define NINETY_DEGREE_TURN_TIME 0.7f
+#define SENSOR_DISTANCE_AT_WALL 12
+#define STOP_TIME 0.3f
 
 void turn90Left(void);
 void turn90Right(void);
@@ -47,17 +48,24 @@ void emptyRoomClean(bool deep) {
             }
         }
         stop();
+        delayMs(100);
+        backward(NORMAL_OPERATION_SPEED);
+        delayMs(500);
         if (sensorFacingEnd) {
             turn90Right();
+            delayMs(100);
             forward(NORMAL_OPERATION_SPEED);
             delayMs(ROOMBA_LENGTH_TIME*1000);
             stop();
+            delayMs(100);
             turn90Right();
         } else {
             turn90Left();
+            delayMs(100);
             forward(NORMAL_OPERATION_SPEED);
             delayMs(ROOMBA_LENGTH_TIME*1000);
             stop();
+            delayMs(100);
             turn90Left();
         }
         sensorFacingEnd = !sensorFacingEnd;
@@ -75,17 +83,17 @@ every roomba length or so to do a more thorough cleaning.
 void spillClean(int totalTime) {
     int msLeft = totalTime*1000;
     int forwardTimeMs = ROOMBA_LENGTH_TIME*1000;
-    int temp;
+    int tempIter;
     int iterations = 1;
     while (msLeft > 0) {
         for (int i=0; i<2; i++) {
-            temp = forwardTimeMs;
-            while (temp > 0) {
+            tempIter = iterations;
+            while (tempIter > 0) {
                 forward(NORMAL_OPERATION_SPEED);
                 delayMs(ROOMBA_LENGTH_TIME*1000);
                 stop();
                 delayMs(STOP_TIME*1000);
-                temp -= ROOMBA_LENGTH_TIME*1000;
+                tempIter--;
             }
             turn90Left();
         }
@@ -108,15 +116,43 @@ after sweeping the floor.
 void roomOutline(int time) {
     int msTime = time*1000;
     int proximityState;
+    int switchState;
+    bool justLeft;
     while (msTime > 0) {
         proximityState = tooCloseToWall();
-        if (proximityState == 1) { //left too close, right not too close
+        switchState = collisionDetected();
+        if (switchState & 1) {
+            printf("Front switch closed\n");
+            stop();
+            delayMs(5000);
+        } else if (proximityState == 1 || switchState == 2) { //left too close, right not too close
+            printf("Wall on left\n");
             forward(NORMAL_OPERATION_SPEED);
+            justLeft = true;
         } else if (proximityState == 0) { //both not too close
+            printf("Sensors clear\n");
+            forward(NORMAL_OPERATION_SPEED);
+            delayMs(ROOMBA_LENGTH_TIME*500);
             turn90Left();
-        } else if (proximityState == 2) {
+            delayMs(100);
+        } else if ((switchState & 1) && !(proximityState & 2)) {
+            printf("Turn right\n");
+            backward(0.4);
+            delayMs(200);
+            turn90Right();
+            delayMs(100);
+        } else if (justLeft && !(proximityState & 1)) {
+            printf("Correcting to wall on left\n");
+            rotate_right(NORMAL_OPERATION_SPEED/2);
+            delayMs(50);
+            stop();
+            delayMs(100);
+            justLeft = false;
+        } else if (proximityState & 2 || switchState & 4) { //right too close
+            printf("Wall on right\n");
             turn90Right();
         }
+        delayMs(200);
         msTime--;
         delay1ms();
     }

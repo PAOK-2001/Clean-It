@@ -7,7 +7,7 @@
 
 void adc_init(void);
 void proximity_init(void);
-double proximity_read_average(int, int);
+double proximity_read_average(int sensorValue, int measurements);
 
 //adc_init()
 // Initialized clock for ADC0 and configures necessary register.
@@ -40,7 +40,7 @@ double proximity_read_average(int sensorChannel, int measurements){
         ADC0->SC1[0] = sensorChannel;
         while(!(ADC0->SC1[0] & 0x80)) { } /* wait for COCO */
         sum = sum + ADC0->R[0];
-        delayMs(50);
+        delayMs(10);
     }
     rawValue = sum/measurements;
     valueCm  = 66.3 -0.0507*rawValue + 0.0000163*pow(rawValue,2) -0.00000000188*pow(rawValue,3);

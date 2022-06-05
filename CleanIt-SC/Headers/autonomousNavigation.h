@@ -5,9 +5,7 @@
 #include "delays.h"
 #include "pathFollower.h"
 #include <stdlib.h>
-#define NORMAL_OPERATION_SPEED 0.1f
-#define ROOMBA_LENGTH_TIME 1.2f
-#define ONE_DEGREE_TURN_TIME 0.011f
+#define ONE_DEGREE_TURN_TIME 0.00556f
 #define SPIRAL_TIME 5
 #define WALL_TIME 5
 #define MS_UNTIL_CLEAR 3000
@@ -25,7 +23,7 @@ void turnNDegreesLeft(int degrees, int* routineTime) {
         rotate_left(NORMAL_OPERATION_SPEED);
         delayMs(ONE_DEGREE_TURN_TIME*degrees*1000);
         stop();
-    } else turnNDegreesRight(degrees);
+    } else turnNDegreesRight(degrees, routineTime);
     *routineTime = *routineTime - ONE_DEGREE_TURN_TIME*degrees*1000;
 }
 
@@ -34,7 +32,7 @@ void turnNDegreesRight(int degrees, int* routineTime) {
         rotate_right(NORMAL_OPERATION_SPEED);
         delayMs(ONE_DEGREE_TURN_TIME*degrees*1000);
         stop();
-    } else turnNDegreesLeft(degrees);
+    } else turnNDegreesLeft(degrees, routineTime);
     *routineTime = *routineTime - ONE_DEGREE_TURN_TIME*degrees*1000;
 }
 

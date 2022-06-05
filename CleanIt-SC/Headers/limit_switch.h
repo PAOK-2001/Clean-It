@@ -17,7 +17,7 @@ void limit_switch_init(void){
 }
 
 bool hasNOT_collided(int pinNumber) {
-    return PTC->PDIR & (0x01 << pinNumber);
+    return (PTC->PDIR >> pinNumber) & 1;
 }
 
 #endif
