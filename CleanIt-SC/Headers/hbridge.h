@@ -36,7 +36,7 @@ void hbridge_init(void) {
 }
 
 void forward(float speed){
-    TPM0->CONTROLS[5].CnV = mod * speed * 0.92f;
+    TPM0->CONTROLS[5].CnV = mod * speed * 1.05f;
     TPM0->CONTROLS[4].CnV = 0;
     TPM0->CONTROLS[2].CnV = 0;
     TPM0->CONTROLS[1].CnV = mod * speed;
@@ -50,7 +50,7 @@ void backward(float speed){
 }
 
 void rotate_left(float speed){
-    TPM0->CONTROLS[5].CnV = mod * speed * 0.92f;
+    TPM0->CONTROLS[5].CnV = mod * speed * 1.05f;
     TPM0->CONTROLS[4].CnV = 0;
     TPM0->CONTROLS[2].CnV = mod * speed;
     TPM0->CONTROLS[1].CnV = 0;

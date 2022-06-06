@@ -6,7 +6,7 @@
 #include "pathFollower.h"
 #include <stdlib.h>
 #include <stdio.h>
-#define ONE_DEGREE_TURN_TIME 0.0066f
+#define ONE_DEGREE_TURN_TIME 0.00611f
 #define SPIRAL_TIME 15
 #define WALL_TIME 5
 #define MS_UNTIL_CLEAR 5000
@@ -96,14 +96,14 @@ bool headToClear(int* routineTime) {
     case 1:
         while(proximityState) {
             proximityState = tooCloseToWall();
-            turnNDegreesRight(15, routineTime);
+            turnNDegreesRight(30, routineTime);
         }
         turnNDegreesRight(45, routineTime);
         break;
     case 2:
         while(proximityState) {
             proximityState = tooCloseToWall();
-            turnNDegreesLeft(15, routineTime);
+            turnNDegreesLeft(30, routineTime);
         }
         turnNDegreesLeft(45, routineTime);
         break;
@@ -113,6 +113,7 @@ bool headToClear(int* routineTime) {
     default:
         break;
     }
+    delayMs(100);
     forward(NORMAL_OPERATION_SPEED);
     while (time < MS_UNTIL_CLEAR) {
         proximityState = tooCloseToWall();

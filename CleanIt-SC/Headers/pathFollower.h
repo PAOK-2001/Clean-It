@@ -6,7 +6,7 @@
 #include <stdio.h>
 #define NORMAL_OPERATION_SPEED 0.5f
 #define ROOMBA_LENGTH_TIME 0.7f
-#define NINETY_DEGREE_TURN_TIME 0.6f
+#define NINETY_DEGREE_TURN_TIME 0.55f
 #define SENSOR_DISTANCE_AT_WALL 12
 #define STOP_TIME 0.3f
 
