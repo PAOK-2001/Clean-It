@@ -22,11 +22,11 @@ Clean It has the follow key componets that make up it's functionality
 -  **Turbine**: a turbine is needed to create the preassure difference necessary to displace air in the intake.
 -  **Power Distribution**: Clean It is powered by 3 18650 cells, however 5V are necessary for many  of the above components including the microprocessor, thus a 5V regulator was implemented and screw terminals where used to map all the power lines.
       
-      <img src="https://user-images.githubusercontent.com/29895011/172117967-681e6bf7-85c3-4d9a-90fb-a7f03895905a.jpg" width=25% height=25%>
+      <img src="https://user-images.githubusercontent.com/29895011/172117967-681e6bf7-85c3-4d9a-90fb-a7f03895905a.jpg" width=45% height=45%>
 
 -  **KL25Z Board and GPIO Board**: the brains of this project is NXP's KL25Z Freedom Board. To interface the board with the components screw terminals where routed to the GPIO pins using a "PCB" of sorts, ensuring a robust system.
 
-      <img src="https://user-images.githubusercontent.com/29895011/172119613-5b08e581-fb3c-4350-b638-d6fa6669bb72.jpg" width=25% height=25%>
+      <img src="https://user-images.githubusercontent.com/29895011/172119613-5b08e581-fb3c-4350-b638-d6fa6669bb72.jpg" width=45% height=45%>
 
 
 ## Deep dive into the code
