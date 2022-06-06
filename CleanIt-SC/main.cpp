@@ -11,16 +11,20 @@ int main() {
     int mode, time, pattern;
     systemInit();
     while (1) {
+        delayMs(1000);
         mode = mode_select();
         if (mode == 1) {
             time = time_select();
+            delayMs(200);
             mosfet_on();
             autonomousRoutine(time);
             mosfet_off();
         } else {
             pattern = pattern_select();
+            delayMs(200);
             if (pattern == 2 || pattern == 4) time = time_select();
             mosfet_on();
+            delayMs(200);
             switch (pattern) {
             case 0:
                 emptyRoomClean(true);
@@ -51,4 +55,3 @@ void systemInit() {
     hbridge_init();
     menus_init();
 }
-

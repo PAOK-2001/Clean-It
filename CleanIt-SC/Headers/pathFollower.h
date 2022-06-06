@@ -6,7 +6,7 @@
 #include <stdio.h>
 #define NORMAL_OPERATION_SPEED 0.5f
 #define ROOMBA_LENGTH_TIME 0.7f
-#define NINETY_DEGREE_TURN_TIME 0.7f
+#define NINETY_DEGREE_TURN_TIME 0.6f
 #define SENSOR_DISTANCE_AT_WALL 12
 #define STOP_TIME 0.3f
 
@@ -114,47 +114,67 @@ of the right one. This is done to cover the areas that are usually dirtier
 after sweeping the floor.
 */
 void roomOutline(int time) {
-    int msTime = time*1000;
+    int msTime = time*500;
     int proximityState;
     int switchState;
-    bool justLeft;
+    double leftSensor, rightSensor;
+    bool justLeft = false;
+    bool justCorrected;
+    bool lastCorrectionLeft = false;
     while (msTime > 0) {
-        proximityState = tooCloseToWall();
+        proximityState = tooCloseToWall(&leftSensor, &rightSensor);
         switchState = collisionDetected();
-        if (switchState & 1) {
-            printf("Front switch closed\n");
-            stop();
-            delayMs(5000);
-        } else if (proximityState == 1 || switchState == 2) { //left too close, right not too close
-            printf("Wall on left\n");
-            forward(NORMAL_OPERATION_SPEED);
-            justLeft = true;
-        } else if (proximityState == 0) { //both not too close
-            printf("Sensors clear\n");
-            forward(NORMAL_OPERATION_SPEED);
-            delayMs(ROOMBA_LENGTH_TIME*500);
-            turn90Left();
-            delayMs(100);
-        } else if ((switchState & 1) && !(proximityState & 2)) {
+        if ((switchState & 1) && !(proximityState & 2) && justLeft) {
             printf("Turn right\n");
             backward(0.4);
             delayMs(200);
             turn90Right();
-            delayMs(100);
-        } else if (justLeft && !(proximityState & 1)) {
-            printf("Correcting to wall on left\n");
-            rotate_right(NORMAL_OPERATION_SPEED/2);
-            delayMs(50);
-            stop();
-            delayMs(100);
-            justLeft = false;
         } else if (proximityState & 2 || switchState & 4) { //right too close
             printf("Wall on right\n");
             turn90Right();
+            delayMs(100);
+            turn90Right();
+        } else if (proximityState == 1 || switchState == 2 || justCorrected) { //left too close, right not too close
+            printf("Wall on left\n");
+            forward(NORMAL_OPERATION_SPEED);
+            delayMs(300);
+            justLeft = true;
+            justCorrected = false;
+        } else if (proximityState == 0 && leftSensor > CLOSEST_ALLOWED_DISTANCE + 15) { //both not too close
+            printf("Sensors clear\n");
+            forward(NORMAL_OPERATION_SPEED);
+            delayMs(ROOMBA_LENGTH_TIME*1500);
+            turn90Left();
+            delayMs(100);
+            forward(NORMAL_OPERATION_SPEED);
+            delayMs(ROOMBA_LENGTH_TIME*2500);
+        } else if (justLeft && !(proximityState & 1) ) {
+            if (lastCorrectionLeft) {
+                printf("Correcting to wall on right\n");
+                rotate_right(NORMAL_OPERATION_SPEED/3);
+                delayMs(250);
+                forward(NORMAL_OPERATION_SPEED);
+                delayMs(500);
+                stop();
+                lastCorrectionLeft = false;
+            } else {
+                printf("Correcting to wall on left\n");
+                rotate_left(NORMAL_OPERATION_SPEED/3);
+                delayMs(250);
+                forward(NORMAL_OPERATION_SPEED);
+                delayMs(500);
+                stop();
+                lastCorrectionLeft = true;
+            }
+            justCorrected = true;
+            justLeft = false;
+        } else {
+            printf("Help me I'm stuck\n");
+            stop();
+            break;
         }
-        delayMs(200);
-        msTime--;
-        delay1ms();
+        delayMs(100);
+        msTime -= 500;
     }
     stop();
 }

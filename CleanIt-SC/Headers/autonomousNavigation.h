@@ -5,10 +5,11 @@
 #include "delays.h"
 #include "pathFollower.h"
 #include <stdlib.h>
-#define ONE_DEGREE_TURN_TIME 0.00556f
-#define SPIRAL_TIME 5
+#include <stdio.h>
+#define ONE_DEGREE_TURN_TIME 0.0066f
+#define SPIRAL_TIME 15
 #define WALL_TIME 5
-#define MS_UNTIL_CLEAR 3000
+#define MS_UNTIL_CLEAR 5000
 
 void turnNDegreesLeft(int, int*);
 void turnNDegreesRight(int, int*);
@@ -38,6 +39,7 @@ void turnNDegreesRight(int degrees, int* routineTime) {
 
 //step 1: spiral for a set amount of time
 void spiral(int time, int* routineTime) {
+    printf("Spiral\n");
     int msLeft = time*1000;
     int forwardTimeMs = ROOMBA_LENGTH_TIME*1000;
     int temp;
@@ -57,35 +59,52 @@ void spiral(int time, int* routineTime) {
     } 
     int degrees = rand()%181 - 90;
     turnNDegreesLeft(degrees, routineTime);
+    printf("Spiral done\n");
 }
 
 //step 2: head for the perimeter
 void straightToWall(int* routineTime) {
-    forward();
-    while(!(tooCloseToWall() || collisionDetected())) {
+    printf("Straight to wall\n");
+    forward(NORMAL_OPERATION_SPEED);
+    int wallState = tooCloseToWall();
+    int collisionState = collisionDetected();
+    while(!(wallState || collisionState)) {
+        wallState = tooCloseToWall();
+        collisionState = collisionDetected();
         delayMs(50);
         *routineTime = *routineTime - 50;
     }
     stop();
+    printf("Straight to wall done\n");
 }
 
 //step 3: move along the wall/edge for some time
 void moveAlongWall(int time, int* routineTime) {
+    printf("Move along wall\n");
     roomOutline(time);
     *routineTime = *routineTime - time*1000;
+    printf("Move along wall done\n");
 }
 
 //step 4: head for a clear path (and spiral if a wall is not hit for an amount of time)
 bool headToClear(int* routineTime) {
+    printf("Head to clear\n");
     int proximityState = tooCloseToWall();
+    int collisionState = collisionDetected();
     int time = 0;
     switch (proximityState) {
     case 1:
-        while(tooCloseToWall()) turnNDegreesRight(15, routineTime);
+        while(proximityState) {
+            proximityState = tooCloseToWall();
+            turnNDegreesRight(15, routineTime);
+        }
         turnNDegreesRight(45, routineTime);
         break;
     case 2:
-        while(tooCloseToWall()) turnNDegreesLeft(15, routineTime);
+        while(proximityState) {
+            proximityState = tooCloseToWall();
+            turnNDegreesLeft(15, routineTime);
+        }
         turnNDegreesLeft(45, routineTime);
         break;
     case 3:
@@ -94,26 +113,34 @@ bool headToClear(int* routineTime) {
     default:
         break;
     }
-    forward();
+    forward(NORMAL_OPERATION_SPEED);
     while (time < MS_UNTIL_CLEAR) {
+        proximityState = tooCloseToWall();
+        collisionState = collisionDetected();
         delayMs(100);
-        time += 100;
-        if (tooCloseToWall() || collisionDetected()) break;
+        time += 300;
+        if (proximityState || collisionState) break;
     }
     stop();
     *routineTime = *routineTime - time;
+    printf("Head to clear done\n");
     return time >= MS_UNTIL_CLEAR;
 }
 
 void autonomousRoutine(int time) {
+    int msTime = time*1000;
     bool clear = true;
     while (time > 0) {
         if (clear) {
-            spiral(SPIRAL_TIME, time);
-            straightToWall(time);
+            spiral(SPIRAL_TIME, &msTime);
+            delayMs(100);
+            straightToWall(&msTime);
+            delayMs(100);
         }
-        moveAlongWall(WALL_TIME, time);
-        clear = headToClear(time);
+        moveAlongWall(WALL_TIME, &msTime);
+        delayMs(100);
+        clear = headToClear(&msTime);
+        delayMs(100);
     }
 }
 

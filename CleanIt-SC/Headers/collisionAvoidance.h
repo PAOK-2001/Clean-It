@@ -31,4 +31,16 @@ int tooCloseToWall() {
     return state;
 }
 
+int tooCloseToWall(double* distanceL, double* distanceR) {
+    int state = 0x0;
+    double leftSensor,rightSensor;
+    leftSensor = proximity_read_average(8,20);
+    rightSensor = proximity_read_average(9, 20);
+    *distanceL = leftSensor;
+    *distanceR = rightSensor;
+    if (leftSensor < CLOSEST_ALLOWED_DISTANCE) state |= 1;
+    else if (rightSensor < CLOSEST_ALLOWED_DISTANCE) state |= 2;
+    return state;
+}
+
 #endif
